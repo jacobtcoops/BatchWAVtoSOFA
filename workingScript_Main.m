@@ -3,16 +3,20 @@ close all;
 clear;
 
 %% Paths
-SRIRPath = 'Rotation Compensated SRIRs/Omni/';
-outputPath = 'Rotation Compensated SRIRs/SOFA Files/';
+% Input omnidirectional SRIRs
+omniSRIRPath = 'D:\_RESOURCE\MaidaVale-IRs\230928-N3D-Omni-All\MV4\AS2\AS2\TOA\';
+% Output SingleRoomSRIRs
+outputPath_Single = 'D:\_RESOURCE\MaidaVale-IRs\SOFA\MV4\SingleRoomSRIR\';
+% Output SingleRoomMIMOSRIR
+outputPath_SingleMIMO = 'D:\_RESOURCE\MaidaVale-IRs\SOFA\MV4\SingleRoomSRIR\';
 
 %% Add required paths
 % MATLAB Code
 addpath('MATLAB Code/');
 % SOFA Toolbox
-addpath('MATLAB Code/SOFAtoolbox-master/SOFAtoolbox/');
-% SRIRs
-addpath(SRIRPath);
+addpath('D:\GitHub-Directory\BatchWAVtoSOFA\externals\SOFAtoolbox\SOFAtoolbox\');
+%Iinput omni SRIRs
+addpath(omniSRIRPath);
 % Co-ordinate Path
 addpath('Maida Vale Coordinates/');
 
@@ -55,21 +59,23 @@ end
 
 %% Generate SOFA file
 % Create a SOFA file for each source
-% ADD IN FOR LOOP FOR MULTIPLE SOURCES
+
+% For each source
 for index = 1: noSourcePos
-%     index = 1;
+    
     sourcePosString = char(table2array(sourceCoordTable(index, 1)));
 
     outputFileName = strcat('MV4_AS2_Eigen_S_', sourcePosString, ...
         '_Omni_3OA.sofa');
+
     % Create array for single source positions
-    
     singleSourcePos = NaN(noListenerPos, width(listenerPos));
+
     for i = 1: length(listenerPos)
         singleSourcePos(i, :) = sourcePos(index, :);
     end
 
-    SOFAFile = generateSOFASingleRoomSRIR(noSourcePos, index, listenerPos, singleSourcePos, SRIRPath, outputPath, outputFileName);
+    SOFAFile = generateSOFASingleRoomSRIR(noSourcePos, index, listenerPos, singleSourcePos, omniSRIRPath, outputPath_Single, outputFileName);
 
 end
 
