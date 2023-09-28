@@ -1,17 +1,15 @@
 function [Obj] = generateSOFASingleRoomSRIR(totalSources, sourceNumber, listenerPos, sourcePos, SRIRPath, outputPath, outputFileName)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
+%   OMNI
 
 %% Get empty conventions structure for SingleRoomSRIR
 Obj = SOFAgetConventions('SingleRoomSRIR');
 
 %% Coordinates
-% REMOVE COMMENTED CODE AND UPDATE SINGLE ROOM SRIR TO REFLECT
-% % Number of source and listener positions required
-% NoListenerPositions = height(listenerPos);
-% %   Source positions = 1 gives a SOFA file for each source
-% NoSourcePositions = height(sourcePos);
-%   Combinations of listener and source positions
+% Combinations of listener and source positions
+%   This will be the height of either the listenerPos array or the
+%   sourcePos array (both will be the same)
 ListenerSourceCombs = height(listenerPos);
 
 %% Import .wav files
@@ -22,26 +20,32 @@ fileStruct = dir(fullfile(SRIRPath,'*.wav'));
 
 %% General Metadata
 % Deafult values
-% GLOBAL_Conventions = 'SOFA';
-% GLOBAL_Version = '2.1';
-% GLOBAL_SOFAConventions = 'SingleRoomSRIR';
-% CHECK THIS - Alternative value - default value is 1.0
-% Obj.GLOBAL_SOFAConventionsVersion = '1.1';
+Obj.GLOBAL_Conventions = 'SOFA';
+Obj.GLOBAL_Version = '2.1';
+Obj.GLOBAL_SOFAConventions = 'SingleRoomSRIR';
+Obj.GLOBAL_SOFAConventionsVersion = '1.0';
 % Default values
-% GLOBAL_DataType = 'FIR';
+Obj.GLOBAL_DataType = 'FIR';
 Obj.GLOBAL_RoomType = 'dae';
 Obj.GLOBAL_Title = 'BBC Maida Vale Impulse Response Dataset';
 % Default values
-% Obj.GLOBAL_DateCreated = '2023-03-16, 11:01:00';
+Obj.GLOBAL_DateCreated = '2023-09-28, 11:00:00';
 % Date modified set by SOFAsave code
-% Obj.GLOBAL_DateModified = datestr(now, 'yyyy-mm-dd HH:MM:SS');
+Obj.GLOBAL_DateModified = datestr(now, 'yyyy-mm-dd HH:MM:SS');
 % Default values
-% Obj.GLOBAL_APIName = 'SOFA Toolbox for Matlab/Octave';
-% Obj.GLOBAL_APIVersion = '2.1.4';
+Obj.GLOBAL_APIName = 'SOFA Toolbox for Matlab/Octave';
+% Obj.GLOBAL_APIVersion = '2.2.0';
 Obj.GLOBAL_AuthorContact = 'gavin.kearney@york.ac.uk';
 Obj.GLOBAL_Organization = 'University of York';
-Obj.GLOBAL_License = ['Creative Commons (CC-BY 3.0). Visit http://'...
-    'https://creativecommons.org/licenses/by/3.0/ for licence details.'];
+Obj.GLOBAL_License = ['You may not use this work except in compliance with ' ...
+    'the Apache License, Version 2.0. You may obtain a copy of the ' ...
+    'license from the AMT directory "licences" and at: ' ...
+    'http://www.apache.org/licenses/LICENSE-2.0 Unless required by ' ...
+    'applicable law or agreed to in writing, softwaredistributed ' ...
+    'under the License is distributed on an "AS IS" BASIS, WITHOUT ' ...
+    'WARRANTIES OR CONDITIONS OF ANY KIND, either express or ' ...
+    'implied. See the License for the specific language governing ' ...
+    'permissions and limitations under the License.'];
 Obj.GLOBAL_ApplicationName = 'MathWorks MATLAB';
 Obj.GLOBAL_ApplicationVersion = '9.13.0.2105380 (R2022b Update 2)';
 Obj.GLOBAL_Comment = ['The measurements were undertaken in Summer/' ...
@@ -143,69 +147,50 @@ Obj.EmitterPosition = [0, 0, 0];
 
 %% API Values
 
+% Omni responses used - only one direction for each source and listener
 SourceOrientations = 1;
 ListenerOritentations = 1;
 
-M = ListenerSourceCombs * SourceOrientations * ...
-    ListenerOritentations;
+% Number of measurements
+M = ListenerSourceCombs * SourceOrientations * ListenerOritentations;
 
-% disp(M);
-
-Obj.API.M = M;
-Obj.API.R = R;
-
+% Number of emitters
 E = height(Obj.EmitterPosition);
-
-Obj.API.E = E;
 
 % TODO - Remove this
 [sampleAudio, Fs] = audioread(strcat(SRIRPath, 'MV4_AS2_Eigen_R_OA-01_S_PA-03_Omni_3OA.wav'));
-
 N = length(sampleAudio);
 
+% Set API values
+Obj.API.M = M;
+Obj.API.R = R;
+Obj.API.E = E;
 Obj.API.N = N;
 
 %% Data
 
+% Initialise IR array
+
 Obj.Data.IR = NaN(M, R, N);
 
 for i = 1: M
-    
+    % Add each wav file
     [audio, ~] = audioread(strcat(SRIRPath, fileStruct((i-1)*totalSources+sourceNumber,1).name));
+    Obj.Data.IR(i, :, :) = audio';
 
-%     disp((i-1)*totalSources+sourceNumber);
-
-    % OLD - DELETE THIS LINE
-    %[audio, ~] = audioread(strcat(SRIRPath, fileStruct(i,1).name));
-
+    % Display progress
     disp(fileStruct((i-1)*totalSources+sourceNumber,1).name);
-
     disp(strcat('Listener Position: ', num2str(listenerPos(i,1)), ', ', num2str(listenerPos(i,2)), ', ', num2str(listenerPos(i,3))));
     disp(strcat('Source Position: ', num2str(sourcePos(i,1)), ', ', num2str(sourcePos(i,2)), ', ', num2str(sourcePos(i,3))));
 
-%     if i == 1 || i == 21
-%         disp(listenerPos(i, :));
-%         disp(fileStruct(i,1).name);
-%     end
-   
-    Obj.Data.IR(i, :, :) = audio';
 
 end
 
-% Should this be M rather than R?
 Obj.Data.Delay = zeros(1, R);
 
 %% Write SOFA file
-% TODO - Come up with output file name
-
-% Remove this when done - in SOFAsave code
-% Obj=SOFAupdateDimensions(Obj, 'verbose', 1);
-
 compression = 0;
-
 disp(['Saving: ' outputFileName]);
-
 Obj = SOFAsave(strcat(outputPath, outputFileName), Obj, compression);
-
 
 end
