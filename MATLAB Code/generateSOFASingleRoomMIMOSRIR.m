@@ -156,8 +156,8 @@ M = ListenerSourceCombs * SourceOrientations * ListenerOritentations;
 % Number of emitters
 E = height(Obj.EmitterPosition);
 
-% TODO - Remove this
-[sampleAudio, Fs] = audioread(strcat(SRIRPath, 'MV4_AS2_Eigen_R_OA-01_S_PA-03_Omni_3OA.wav'));
+% Read in first audio file to get sample rate and length
+[sampleAudio, Fs] = audioread(strcat(SRIRPath, fileStruct(1).name));
 N = length(sampleAudio);
 
 % Set API values
@@ -165,6 +165,9 @@ Obj.API.M = M;
 Obj.API.R = R;
 Obj.API.E = E;
 Obj.API.N = N;
+
+% Set sample rate value
+Obj.Data.SamplingRate = Fs;
 
 %% Data
 

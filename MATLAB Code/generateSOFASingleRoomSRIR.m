@@ -15,6 +15,7 @@ ListenerSourceCombs = height(listenerPos);
 %% Import .wav files
 % place all .wav files in structs
 fileStruct = dir(fullfile(SRIRPath,'*.wav'));
+disp(length(fileStruct));
 
 %% Metadata, as defined by the AES standard for file exchange
 
@@ -25,11 +26,11 @@ Obj.GLOBAL_Version = '2.1';
 Obj.GLOBAL_SOFAConventions = 'SingleRoomSRIR';
 Obj.GLOBAL_SOFAConventionsVersion = '1.0';
 % Default values
-Obj.GLOBAL_DataType = 'FIR';
-Obj.GLOBAL_RoomType = 'dae';
-Obj.GLOBAL_Title = 'BBC Maida Vale Impulse Response Dataset';
+% Obj.GLOBAL_DataType = 'FIR';
+% Obj.GLOBAL_RoomType = 'dae';
+% Obj.GLOBAL_Title = 'BBC Maida Vale Impulse Response Dataset';
 % Default values
-Obj.GLOBAL_DateCreated = '2023-09-28, 11:00:00';
+% Obj.GLOBAL_DateCreated = '2023-09-28, 11:00:00';
 % Date modified set by SOFAsave code
 Obj.GLOBAL_DateModified = datestr(now, 'yyyy-mm-dd HH:MM:SS');
 % Default values
@@ -157,8 +158,8 @@ M = ListenerSourceCombs * SourceOrientations * ListenerOritentations;
 % Number of emitters
 E = height(Obj.EmitterPosition);
 
-% TODO - Remove this
-[sampleAudio, Fs] = audioread(strcat(SRIRPath, 'MV4_AS2_Eigen_R_OA-01_S_PA-03_Omni_3OA.wav'));
+% Read in first audio file to get sample rate and length
+[sampleAudio, Fs] = audioread(strcat(SRIRPath, fileStruct(1).name));
 N = length(sampleAudio);
 
 % Set API values
@@ -166,6 +167,9 @@ Obj.API.M = M;
 Obj.API.R = R;
 Obj.API.E = E;
 Obj.API.N = N;
+
+% Set sample rate value
+Obj.Data.SamplingRate = Fs;
 
 %% Data
 
@@ -183,9 +187,9 @@ for i = 1: M
     disp(strcat('Listener Position: ', num2str(listenerPos(i,1)), ', ', num2str(listenerPos(i,2)), ', ', num2str(listenerPos(i,3))));
     disp(strcat('Source Position: ', num2str(sourcePos(i,1)), ', ', num2str(sourcePos(i,2)), ', ', num2str(sourcePos(i,3))));
 
-
 end
 
+% Set all delays to zero
 Obj.Data.Delay = zeros(1, R);
 
 %% Write SOFA file
