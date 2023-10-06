@@ -152,7 +152,7 @@ for index = 1: MV2_noSourcePos
 
     MV2_sourcePosString = char(table2array(MV2_sourceCoordTable(index, 1)));
 
-    MV2_outputFileNameSingle = strcat('MV2_Eigenmike_IR_Source_', MV2_sourcePosString, ...
+    MV2_outputFileNameSingle = strcat('MV2_AS2_Eigen_S_', MV2_sourcePosString, ...
         '_Omni_3OA.sofa');
 
     % Create array for single source positions
@@ -167,7 +167,7 @@ for index = 1: MV2_noSourcePos
 end
 
 % Create a SingleRoomMIMOSRIR SOFA file for all sources
-MV2_outputFileName_SingleMIMO = 'MV2_Eigenmike_IR_Omni_3OA.sofa';
+MV2_outputFileName_SingleMIMO = 'MV2_AS2_Eigen_Omni_3OA.sofa';
 generateSOFASingleRoomMIMOSRIR(MV2_MIMOListenerPos, MV2_MIMOSourcePos, ...
     MV2_omniSRIRPath, MV2_outputPath_SingleMIMO, MV2_outputFileName_SingleMIMO);
 %% MV4
@@ -201,7 +201,7 @@ for index = 1: MV5_noSourcePos
 
     MV5_sourcePosString = char(table2array(MV5_sourceCoordTable(index, 1)));
 
-    MV5_outputFileNameSingle = strcat('MV5_AS1_Eigen_S_', MV5_sourcePosString, ...
+    MV5_outputFileNameSingle = strcat('MV5_AS2_Eigen_S_', MV5_sourcePosString, ...
         '_Omni_3OA.sofa');
 
     % Create array for single source positions
@@ -216,6 +216,6 @@ for index = 1: MV5_noSourcePos
 end
 
 % Create a SingleRoomMIMOSRIR SOFA file for all sources
-MV5_outputFileName_SingleMIMO = 'MV5_AS1_Eigen_Omni_3OA.sofa';
+MV5_outputFileName_SingleMIMO = 'MV5_AS2_Eigen_Omni_3OA.sofa';
 generateSOFASingleRoomMIMOSRIR(MV5_MIMOListenerPos, MV5_MIMOSourcePos, ...
     MV5_omniSRIRPath, MV5_outputPath_SingleMIMO, MV5_outputFileName_SingleMIMO);

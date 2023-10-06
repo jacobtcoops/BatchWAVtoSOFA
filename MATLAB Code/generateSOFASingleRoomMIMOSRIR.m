@@ -1,7 +1,22 @@
-function [Obj] = generateSOFASingleRoomMIMOSRIR(listenerPos, sourcePos, SRIRPath, outputPath, outputFileName)
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
-%   OMNI
+function [SOFA] = generateSOFASingleRoomMIMOSRIR(listenerPos, sourcePos,...
+    SRIRPath, outputPath, outputFileName)
+%generateSOFASingleRoomMIMOSRIR generates a SOFA file for a set of input 
+%audio files and coordinates
+%   given a list of sound source and listener coordinates, and the path for
+%   the SRIRs, a singleRoomMIMOSRIR SOFA file will be generated
+%   the inputs must be omnidirectional, and stored in the same order as the
+%   coordinate file
+%   INPUTS
+%       totalSources    total number of sound sources for SOFA file
+%       sourceNumber    the sound source number in use
+%       listenerPos     array of listener positions
+%       sourcePos       array of sound source positions
+%       SRIRPath        path to omnidirectional SRIRs
+%       outputPath      path for output SOFA file
+%       outputFileName  name for SOFA file
+%   OUTPUT
+%       SOFA            output SOFA file
+
 
 %% Get empty conventions structure for SingleRoomMIMOSRIR
 Obj = SOFAgetConventions('SingleRoomMIMOSRIR');
@@ -19,21 +34,19 @@ fileStruct = dir(fullfile(SRIRPath,'*.wav'));
 %% Metadata, as defined by the AES standard for file exchange
 
 %% General Metadata
-% Deafult values
 Obj.GLOBAL_Conventions = 'SOFA';
 Obj.GLOBAL_Version = '2.1';
 Obj.GLOBAL_SOFAConventions = 'SingleRoomSRIR';
-Obj.GLOBAL_SOFAConventionsVersion = '1.0';
-% Default values
+% DEFAULT VALUES
+% Obj.GLOBAL_SOFAConventionsVersion = '1.0';
 Obj.GLOBAL_DataType = 'FIR';
-Obj.GLOBAL_RoomType = 'dae';
+Obj.GLOBAL_RoomType = 'reverberant';
 Obj.GLOBAL_Title = 'BBC Maida Vale Impulse Response Dataset';
-% Default values
-Obj.GLOBAL_DateCreated = '2023-09-28, 11:00:00';
-% Date modified set by SOFAsave code
-Obj.GLOBAL_DateModified = datestr(now, 'yyyy-mm-dd HH:MM:SS');
-% Default values
-Obj.GLOBAL_APIName = 'SOFA Toolbox for Matlab/Octave';
+% DEFAULT VALUES
+% Obj.GLOBAL_DateCreated = '2023-09-28, 11:00:00';
+% Obj.GLOBAL_DateModified = datestr(now, 'yyyy-mm-dd HH:MM:SS');
+% DEFAULT VALUES
+% Obj.GLOBAL_APIName = 'SOFA Toolbox for Matlab/Octave';
 % Obj.GLOBAL_APIVersion = '2.2.0';
 Obj.GLOBAL_AuthorContact = 'gavin.kearney@york.ac.uk';
 Obj.GLOBAL_Organization = 'University of York';
@@ -68,13 +81,13 @@ Obj.GLOBAL_DatabaseName = 'BBC Maida Vale Impulse Response Dataset';
 
 %% Listener Metadata
 % THE FOLLOWING ARE NOT REQUIRED
-% Obj.ListenerShortName = 'Eigenmike'
+% Obj.ListenerShortName =
 % Obj.ListenerDescription = 
 Obj.ListenerPosition = listenerPos;
-% Default values
+% DEFAULT VALUES
 % Obj.ListenerPosition_Type = 'cartesian';
 % Obj.ListenerPosition_Units = 'metre';
-% THE FOLLOWING ARE NOT REQUIRED
+% DEFAULT VALUES
 % % Defines the positive x-axis of the respective local coordinate system
 % Obj.ListenerView = [1, 0, 0];
 % % Defines the positive z-axis of the respectivelocal coordinate system
@@ -84,9 +97,8 @@ Obj.ListenerPosition = listenerPos;
 
 %% Receiver Metadata
 % THE FOLLOWING ARE NOT REQUIRED
-% ReceiverShortName = 'Eigenmike Capsules';
+% ReceiverShortName = 
 % ReceiverDescriptions = 
-% TODO - Check this...
 AmbisonicOrder = 3;
 L = AmbisonicOrder;
 R = (L + 1)^2;
@@ -103,17 +115,15 @@ Obj.ReceiverPosition_Units = 'metre';
 % THE FOLLOWING ARE NOT REQUIRED
 % Obj.SourceShortName = 
 % Obj.SourceDescription = 
-% TODO
 Obj.SourcePosition = sourcePos;
-%Obj.SourcePosition = [0, 0, 0];
-% Default values
+% DEFAULT VALUES
 % Obj.SourcePosition_Type = 'cartesian';
 % Obj.SourcePosition_Units = 'metre';
-% Default values
-Obj.SourceView = [1, 0, 0];
-Obj.SourceUp = [0, 0, 1];
-Obj.SourceView_Type = 'cartesian';
-Obj.SourceView_Units = 'metre';
+% DEFAULT VALUES
+% Obj.SourceView = [1, 0, 0];
+% Obj.SourceUp = [0, 0, 1];
+% Obj.SourceView_Type = 'cartesian';
+% Obj.SourceView_Units = 'metre';
 
 %% Emitter Metadata
 % THE FOLLOWING ARE NOT REQUIRED
@@ -130,9 +140,8 @@ Obj.EmitterPosition = [0, 0, 0];
 % Obj.EmitterView_Units = 
 
 %% Room Metadata
-% TODO - Check if info is necessary given the dae file
 % Obj.RoomShortName = 
-% Obj.RoomDescription = 
+Obj.GLOBAL_RoomDescription = 'Please see publication for full details';
 % Obj.RoomLocation = 
 % Obj.RoomTemperature = 
 % Obj.RoomTemperature:Units = 
@@ -186,6 +195,6 @@ Obj.Data.Delay = zeros(1, R);
 %% Write SOFA file
 compression = 0;
 disp(['Saving: ' outputFileName]);
-Obj = SOFAsave(strcat(outputPath, outputFileName), Obj, compression);
+SOFA = SOFAsave(strcat(outputPath, outputFileName), Obj, compression);
 
 end
