@@ -1,4 +1,4 @@
-function [Obj] = generateSOFASingleRoomMIMOSRIR(listenerPos, sourcePos, SRIRPath, outputPath, outputFileName)
+function [SOFA] = generateSOFASingleRoomMIMOSRIR(listenerPos, sourcePos, SRIRPath, outputPath, outputFileName)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 %   OMNI
@@ -180,6 +180,6 @@ Obj.Data.Delay = zeros(1, R);
 %% Write SOFA file
 compression = 0;
 disp(['Saving: ' outputFileName]);
-Obj = SOFAsave(strcat(outputPath, outputFileName), Obj, compression);
+SOFA = SOFAsave(strcat(outputPath, outputFileName), Obj, compression);
 
 end
