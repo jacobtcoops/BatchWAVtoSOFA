@@ -1,7 +1,22 @@
-function [SOFA] = generateSOFASingleRoomMIMOSRIR(listenerPos, sourcePos, SRIRPath, outputPath, outputFileName)
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
-%   OMNI
+function [SOFA] = generateSOFASingleRoomMIMOSRIR(listenerPos, sourcePos,...
+    SRIRPath, outputPath, outputFileName)
+%generateSOFASingleRoomMIMOSRIR generates a SOFA file for a set of input 
+%audio files and coordinates
+%   given a list of sound source and listener coordinates, and the path for
+%   the SRIRs, a singleRoomMIMOSRIR SOFA file will be generated
+%   the inputs must be omnidirectional, and stored in the same order as the
+%   coordinate file
+%   INPUTS
+%       totalSources    total number of sound sources for SOFA file
+%       sourceNumber    the sound source number in use
+%       listenerPos     array of listener positions
+%       sourcePos       array of sound source positions
+%       SRIRPath        path to omnidirectional SRIRs
+%       outputPath      path for output SOFA file
+%       outputFileName  name for SOFA file
+%   OUTPUT
+%       SOFA            output SOFA file
+
 
 %% Get empty conventions structure for SingleRoomMIMOSRIR
 Obj = SOFAgetConventions('SingleRoomMIMOSRIR');
