@@ -29,7 +29,7 @@ addpath('MATLAB Code\');
 % SOFA Toolbox
 addpath('externals\SOFAtoolbox\SOFAtoolbox\');
 % Co-ordinate Path
-addpath('Maida Vale Coordinates\');
+addpath('D:\_RESOURCE\MaidaVale-IRs\Maida-Vale-Coordinates\');
 
 %% Start SOFA toolbox
 SOFAstart();
